@@ -1,20 +1,19 @@
-const { Sequelize } = require('sequelize'); 
-require('dotenv').config();
+const { Sequelize } = require('sequelize');
+require('dotenv').config({ path: __dirname + '/../.env' }); // Load .env file explicitly
 
-// Debugging: Print database connection details
-console.log("DB_HOST:", process.env.DB_HOST);
-console.log("DB_USER:", process.env.DB_USER);
-console.log("DB_PASSWORD:", process.env.DB_PASSWORD ? "******" : "Not Set");
-console.log("DB_NAME:", process.env.DB_NAME);
-console.log("DB_PORT:", process.env.DB_PORT);
+console.log('DB_HOST:', process.env.DB_HOST || 'Not Loaded'); // Debugging
+console.log('DB_USER:', process.env.DB_USER || 'Not Loaded');
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD ? 'Set' : 'Not Set');
+console.log('DB_NAME:', process.env.DB_NAME || 'Not Loaded');
+console.log('DB_PORT:', process.env.DB_PORT || 'Not Loaded');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   host: process.env.DB_HOST,
-  port: process.env.DB_PORT || 14374,  // Ensure correct port
+  port: process.env.DB_PORT,
   dialect: 'mysql',
-  logging: false, 
+  logging: false,
   dialectOptions: {
-    connectTimeout: 60000, 
+    connectTimeout: 60000,
   },
 });
 
