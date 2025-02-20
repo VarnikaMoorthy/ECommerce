@@ -1,32 +1,33 @@
-require('dotenv').config();
-console.log("Loaded JWT Secret:", process.env.JWT_SECRET);  // ✅ Debugging Line
-
 const express = require('express');
-const { sequelize } = require('./models');
-const cors = require('cors');
+const mysql = require('mysql2');
+const dotenv = require('dotenv');
+const testDbRoutes = require('./routes/test-db');  // Import the test-db route
 
-const authRoutes = require('./routes/authRoutes');
-const productRoutes = require('./routes/productRoutes');
-const userRoutes = require('./routes/userRoutes');
-const cartRoutes = require('./routes/cartRoutes');
-const orderRoutes = require('./routes/orderRoutes');
+dotenv.config(); // Load environment variables
 
 const app = express();
-app.use(express.json());
-app.use(cors());
+app.use(express.json()); // Middleware for parsing JSON
+app.use('/api', testDbRoutes); // Mount the test-db route
 
-// ✅ Define Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/orders', orderRoutes);
+// ✅ Establish Database Connection
+const db = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+});
 
-app.get('/', (req, res) => res.send('🚀 Server is running successfully!'));
+db.connect(err => {
+    if (err) {
+        console.error('❌ Database connection failed:', err);
+    } else {
+        console.log('✅ Connected to MySQL Database');
+    }
+});
 
-const PORT = process.env.PORT || 5000;
-
-// ✅ Sync Database & Start Server
-sequelize.sync({ alter: true }).then(() => {
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-}).catch(err => console.error('❌ Database connection error:', err));
+// ✅ Server Listen
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+});
