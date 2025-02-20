@@ -1,4 +1,4 @@
-# Full Stack Developer Assessment
+# Back End Developer Assessment
 
 This project is part of my assessment for the Full Stack Developer role at Elite Tech Park. It involves developing APIs for an E-commerce website, handling different user roles (admin, staff, vendor, and user) with specific permissions and functionalities.
 
