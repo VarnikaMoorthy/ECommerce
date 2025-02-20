@@ -1,33 +1,19 @@
 const express = require('express');
-const mysql = require('mysql2');
 const dotenv = require('dotenv');
-const testDbRoutes = require('./routes/test-db');  // Import the test-db route
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 
 const app = express();
-app.use(express.json()); // Middleware for parsing JSON
-app.use('/api', testDbRoutes); // Mount the test-db route
+app.use(express.json());
 
-// ✅ Establish Database Connection
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+// ✅ Test Route
+app.get('/api/test-db', (req, res) => {
+    res.json({ success: true, message: "Server is running!" });
 });
 
-db.connect(err => {
-    if (err) {
-        console.error('❌ Database connection failed:', err);
-    } else {
-        console.log('✅ Connected to MySQL Database');
-    }
-});
-
-// ✅ Server Listen
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
+}).on('error', (err) => {
+    console.error("❌ Server startup error:", err);
 });
